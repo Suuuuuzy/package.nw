@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang=en><head><meta charset=UTF-8><script>window.tracingOrigin=Math.round(1e3*performance.now())</script><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=X-UA-Compatible content="ie=edge"><link rel=stylesheet href=../static/app.css><link rel=stylesheet href=../static/dark.css><link rel=stylesheet href=../static/material.css><title>微信开发者工具</title><style>body,html,iframe{margin:0;padding:0;width:100%;height:100%}body,html{overflow:hidden}iframe{display:none}webview{position:absolute;width:100%;height:100%}.hybird-main{display:flex;width:100%;height:100%;justify-content:center;align-items:center;flex-direction:column}.hybird-main i{transform:scale(2);margin-bottom:16px}.hybird-main-loadingtext{color:var(--FG-2)}</style></head><body class=dark><div id=container class=container style=min-width:945px></div></body><script>try {
+    function getQuery(search = '') {
+      search = search.replace(/^\?/, '')
+      let parts = search.split('&');
+      let query = {}
+      for (let i = 0, len = parts.length; i < len; i++) {
+        let part = (parts[i] || '').split('=')
+        query[part[0]] = decodeURIComponent(part[1])
+      }
+      return query
+
+    }
+    const search = location.search
+    const query = getQuery(search)
+    if (query.theme === 'white') {
+      document.body.classList.remove('dark')
+    }
+  } catch (e) {
+
+  }
+    // const Win = nw.Window.get()
+    // if (Win) {
+    //   Win.showDevTools()
+    // }</script><script src=../js/core/index.js></script></html>

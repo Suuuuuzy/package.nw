@@ -1,0 +1,429 @@
+/*! ../copy */
+
+/*! ../copy-sync */
+
+/*! ../fs */
+
+/*! ../mkdirs */
+
+/*! ../output */
+
+/*! ../path-exists */
+
+/*! ../remove */
+
+/*! ../util/stat */
+
+/*! ../util/utimes */
+
+/*! ./clone.js */
+
+/*! ./copy */
+
+/*! ./copy-sync */
+
+/*! ./dashBoard */
+
+/*! ./empty */
+
+/*! ./ensure */
+
+/*! ./file */
+
+/*! ./fs */
+
+/*! ./json */
+
+/*! ./jsonfile */
+
+/*! ./legacy-streams.js */
+
+/*! ./link */
+
+/*! ./logPlugin */
+
+/*! ./make-dir */
+
+/*! ./mkdirs */
+
+/*! ./mockDevtools */
+
+/*! ./move */
+
+/*! ./move-sync */
+
+/*! ./navigatorViewProvider */
+
+/*! ./output */
+
+/*! ./output-json */
+
+/*! ./output-json-sync */
+
+/*! ./path-exists */
+
+/*! ./polyfills.js */
+
+/*! ./remove */
+
+/*! ./rimraf */
+
+/*! ./symlink */
+
+/*! ./symlink-paths */
+
+/*! ./symlink-type */
+
+/*! ./utils */
+
+/*! ./webviewMessager */
+
+/*! @tencent/miniprogram-analyzer */
+
+/*! CommonJS bailout: exports is used directly at 55:2-9 */
+
+/*! CommonJS bailout: exports is used directly at 60:2-9 */
+
+/*! CommonJS bailout: module.exports is used directly at 12:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 133:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 14:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 166:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 16:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 1:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 232:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 23:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 28:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 301:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 37:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 3:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 43:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 47:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 4:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 58:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 5:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 60:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 65:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 66:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 6:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 7:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 88:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 96:0-14 */
+
+/*! CommonJS bailout: module.exports is used directly at 98:4-18 */
+
+/*! CommonJS bailout: module.exports is used directly at 9:0-14 */
+
+/*! CommonJS bailout: this is used directly at 2:17-21 */
+
+/*! assert */
+
+/*! at-least-node */
+
+/*! constants */
+
+/*! default exports */
+
+/*! dynamic exports */
+
+/*! export DashBoard [provided] [no usage info] [missing usage info prevents renaming] */
+
+/*! export LogPlugin [provided] [no usage info] [missing usage info prevents renaming] */
+
+/*! export NavigatorViewProvider [provided] [no usage info] [missing usage info prevents renaming] */
+
+/*! export __esModule [provided] [maybe used in main (runtime-defined)] [usage prevents renaming] */
+
+/*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
+
+/*! export activate [provided] [maybe used in main (runtime-defined)] [usage prevents renaming] */
+
+/*! export deactivate [provided] [maybe used in main (runtime-defined)] [usage prevents renaming] */
+
+/*! export fromCallback [provided] [no usage info] [missing usage info prevents renaming] */
+
+/*! export fromPromise [provided] [no usage info] [missing usage info prevents renaming] */
+
+/*! export getWebviewContent [provided] [no usage info] [missing usage info prevents renaming] */
+
+/*! export makeDir [provided] [no usage info] [missing usage info prevents renaming] */
+
+/*! export makeDirSync [provided] [no usage info] [missing usage info prevents renaming] */
+
+/*! exports [maybe provided (runtime-defined)] [no usage info] */
+
+/*! flagged exports */
+
+/*! fs */
+
+/*! fs-extra */
+
+/*! graceful-fs */
+
+/*! jsonfile */
+
+/*! jsonfile/utils */
+
+/*! other exports [not provided] [maybe used in main (runtime-defined)] */
+
+/*! other exports [not provided] [no usage info] */
+
+/*! path */
+
+/*! runtime requirements: __webpack_exports__ */
+
+/*! runtime requirements: __webpack_exports__, __webpack_require__ */
+
+/*! runtime requirements: __webpack_require__, __webpack_exports__ */
+
+/*! runtime requirements: __webpack_require__, module */
+
+/*! runtime requirements: module */
+
+/*! runtime requirements: module, __webpack_require__ */
+
+/*! runtime requirements: top-level-this-exports, __webpack_exports__, __webpack_require__ */
+
+/*! stream */
+
+/*! universalify */
+
+/*! unknown exports (runtime-defined) */
+
+/*! util */
+
+/*! vscode */
+
+/*!*********************!*\
+  !*** external "fs" ***!
+  \*********************/
+
+/*!**********************!*\
+  !*** ./src/utils.ts ***!
+  \**********************/
+
+/*!***********************!*\
+  !*** external "path" ***!
+  \***********************/
+
+/*!***********************!*\
+  !*** external "util" ***!
+  \***********************/
+
+/*!*************************!*\
+  !*** external "assert" ***!
+  \*************************/
+
+/*!*************************!*\
+  !*** external "stream" ***!
+  \*************************/
+
+/*!*************************!*\
+  !*** external "vscode" ***!
+  \*************************/
+
+/*!**************************!*\
+  !*** ./src/dashBoard.ts ***!
+  \**************************/
+
+/*!**************************!*\
+  !*** ./src/extension.ts ***!
+  \**************************/
+
+/*!**************************!*\
+  !*** ./src/logPlugin.ts ***!
+  \**************************/
+
+/*!****************************!*\
+  !*** external "constants" ***!
+  \****************************/
+
+/*!*****************************!*\
+  !*** ./src/mockDevtools.ts ***!
+  \*****************************/
+
+/*!********************************!*\
+  !*** ./src/webviewMessager.ts ***!
+  \********************************/
+
+/*!**************************************!*\
+  !*** ./src/navigatorViewProvider.ts ***!
+  \**************************************/
+
+/*!****************************************!*\
+  !*** ./node_modules/jsonfile/index.js ***!
+  \****************************************/
+
+/*!****************************************!*\
+  !*** ./node_modules/jsonfile/utils.js ***!
+  \****************************************/
+
+/*!*******************************************!*\
+  !*** ./node_modules/graceful-fs/clone.js ***!
+  \*******************************************/
+
+/*!********************************************!*\
+  !*** ./node_modules/fs-extra/lib/index.js ***!
+  \********************************************/
+
+/*!********************************************!*\
+  !*** ./node_modules/universalify/index.js ***!
+  \********************************************/
+
+/*!*********************************************!*\
+  !*** ./node_modules/at-least-node/index.js ***!
+  \*********************************************/
+
+/*!***********************************************!*\
+  !*** ./node_modules/fs-extra/lib/fs/index.js ***!
+  \***********************************************/
+
+/*!***********************************************!*\
+  !*** ./node_modules/graceful-fs/polyfills.js ***!
+  \***********************************************/
+
+/*!************************************************!*\
+  !*** ./node_modules/fs-extra/lib/copy/copy.js ***!
+  \************************************************/
+
+/*!************************************************!*\
+  !*** ./node_modules/fs-extra/lib/move/move.js ***!
+  \************************************************/
+
+/*!************************************************!*\
+  !*** ./node_modules/fs-extra/lib/util/stat.js ***!
+  \************************************************/
+
+/*!************************************************!*\
+  !*** external "@tencent/miniprogram-analyzer" ***!
+  \************************************************/
+
+/*!*************************************************!*\
+  !*** ./node_modules/fs-extra/lib/copy/index.js ***!
+  \*************************************************/
+
+/*!*************************************************!*\
+  !*** ./node_modules/fs-extra/lib/json/index.js ***!
+  \*************************************************/
+
+/*!*************************************************!*\
+  !*** ./node_modules/fs-extra/lib/move/index.js ***!
+  \*************************************************/
+
+/*!*************************************************!*\
+  !*** ./node_modules/graceful-fs/graceful-fs.js ***!
+  \*************************************************/
+
+/*!**************************************************!*\
+  !*** ./node_modules/fs-extra/lib/empty/index.js ***!
+  \**************************************************/
+
+/*!**************************************************!*\
+  !*** ./node_modules/fs-extra/lib/ensure/file.js ***!
+  \**************************************************/
+
+/*!**************************************************!*\
+  !*** ./node_modules/fs-extra/lib/ensure/link.js ***!
+  \**************************************************/
+
+/*!**************************************************!*\
+  !*** ./node_modules/fs-extra/lib/util/utimes.js ***!
+  \**************************************************/
+
+/*!***************************************************!*\
+  !*** ./node_modules/fs-extra/lib/ensure/index.js ***!
+  \***************************************************/
+
+/*!***************************************************!*\
+  !*** ./node_modules/fs-extra/lib/mkdirs/index.js ***!
+  \***************************************************/
+
+/*!***************************************************!*\
+  !*** ./node_modules/fs-extra/lib/output/index.js ***!
+  \***************************************************/
+
+/*!***************************************************!*\
+  !*** ./node_modules/fs-extra/lib/remove/index.js ***!
+  \***************************************************/
+
+/*!****************************************************!*\
+  !*** ./node_modules/fs-extra/lib/json/jsonfile.js ***!
+  \****************************************************/
+
+/*!****************************************************!*\
+  !*** ./node_modules/fs-extra/lib/remove/rimraf.js ***!
+  \****************************************************/
+
+/*!****************************************************!*\
+  !*** ./node_modules/graceful-fs/legacy-streams.js ***!
+  \****************************************************/
+
+/*!*****************************************************!*\
+  !*** ./node_modules/fs-extra/lib/ensure/symlink.js ***!
+  \*****************************************************/
+
+/*!******************************************************!*\
+  !*** ./node_modules/fs-extra/lib/copy-sync/index.js ***!
+  \******************************************************/
+
+/*!******************************************************!*\
+  !*** ./node_modules/fs-extra/lib/mkdirs/make-dir.js ***!
+  \******************************************************/
+
+/*!******************************************************!*\
+  !*** ./node_modules/fs-extra/lib/move-sync/index.js ***!
+  \******************************************************/
+
+/*!*******************************************************!*\
+  !*** ./node_modules/fs-extra/lib/json/output-json.js ***!
+  \*******************************************************/
+
+/*!********************************************************!*\
+  !*** ./node_modules/fs-extra/lib/path-exists/index.js ***!
+  \********************************************************/
+
+/*!**********************************************************!*\
+  !*** ./node_modules/fs-extra/lib/copy-sync/copy-sync.js ***!
+  \**********************************************************/
+
+/*!**********************************************************!*\
+  !*** ./node_modules/fs-extra/lib/ensure/symlink-type.js ***!
+  \**********************************************************/
+
+/*!**********************************************************!*\
+  !*** ./node_modules/fs-extra/lib/move-sync/move-sync.js ***!
+  \**********************************************************/
+
+/*!***********************************************************!*\
+  !*** ./node_modules/fs-extra/lib/ensure/symlink-paths.js ***!
+  \***********************************************************/
+
+/*!************************************************************!*\
+  !*** ./node_modules/fs-extra/lib/json/output-json-sync.js ***!
+  \************************************************************/
+
+/*!******************************************************************!*\
+  !*** ./node_modules/jsonfile/node_modules/universalify/index.js ***!
+  \******************************************************************/

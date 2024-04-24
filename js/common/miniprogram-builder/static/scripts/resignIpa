@@ -1,0 +1,166 @@
+# !/bin/bash
+
+SOURCEIPA="$1"
+OUTPUT="$2"
+HASNES="$3"
+UNIVERSALLINK="$4"
+
+CERTIFICATENAME=$(osascript -e 'Tell application "System Events" to display dialog "请输入签名证书名（可以查看钥匙串）:"  with title "Miniapp Builder" default answer "" buttons {"Cancel", "OK"} default button "OK"' -e 'if button returned of result is "OK" then' -e 'text returned of result' -e 'else' -e 'return "Cancel"' -e 'end if' 2>/dev/null)
+
+if [ $? -ne 0 ]; then
+    echo "execute osascript failed: 可能工具未获得授权将 Apple 事件发送给 System Events。可以在「安全与隐私 > 隐私 > 自动化」中开启权限" >&2
+    exit -1
+fi
+
+if [ "$CERTIFICATENAME" != 'Cancel' ]; then 
+    # 选择profile
+    MOBILEPROV=$(osascript -e 'set profilePath to choose file with prompt "请选择分发类型的 profile 文件（mobileprovision文件）" of type {"mobileprovision"}' -e 'if profilePath is not equal to false then' -e 'set profilePath to POSIX path of profilePath' -e 'end if' 2>/dev/null)
+    if [ "$MOBILEPROV" != '' ]; then 
+        if [ "$HASNES" == 'true' ]; then
+            # 选择profile
+            extensionProfilePath=$(osascript -e 'set extensionProfilePath to choose file with prompt "请选择 消息服务扩展(notification service extension) profile 文件（mobileprovision文件）" of type {"mobileprovision"}' -e 'if extensionProfilePath is not equal to false then' -e 'set extensionProfilePath to POSIX path of extensionProfilePath' -e 'end if' 2>/dev/null)
+            if [ "$extensionProfilePath" == '' ]; then
+                extensionProfilePath=""
+                CERTIFICATENAME=""
+                MOBILEPROV=""
+                echo "Cancel At choose ExtensionProfilePath" >&2
+                exit -1
+            fi
+        else
+            extensionProfilePath=""
+        fi
+    else
+        CERTIFICATENAME=""
+        MOBILEPROV=""
+        echo "Cancel At choose MOBILEPROV" >&2
+        exit -1
+    fi
+else 
+    CERTIFICATENAME=""
+    echo "Cancel At enter CERTIFICATENAME" >&2
+    exit -1
+fi
+
+temp_dir=$(mktemp -d)
+temp_extracted="$temp_dir/extracted"
+unzip -qo "$SOURCEIPA" -d $temp_extracted
+cd $temp_dir
+ 
+APPLICATION=$(ls $temp_extracted/Payload/)
+ 
+cp "$MOBILEPROV" "$temp_extracted/Payload/$APPLICATION/embedded.mobileprovision"
+
+if [ "$HASNES" == 'true' ]; then
+    cp "$extensionProfilePath" "$temp_extracted/Payload/$APPLICATION/PlugIns/TPNSService.appex/embedded.mobileprovision"
+fi
+ 
+# Create an empty plist file
+empty_plist="empty_entitlements.plist"
+touch "$empty_plist"
+echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" >> "$empty_plist"
+echo "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">" >> "$empty_plist"
+echo "<plist version=\"1.0\">" >> "$empty_plist"
+echo "<dict>" >> "$empty_plist"
+echo "</dict>" >> "$empty_plist"
+echo "</plist>" >> "$empty_plist"
+
+echo "Resigning with certificate: $CERTIFICATENAME"
+find -d $temp_extracted  \( -name "*.app" -o -name "*.appex" -o -name "*.framework" -o -name "*.dylib" \) > sign_items.txt
+
+# gen main app entitlement
+security cms -D -i "$temp_extracted/Payload/$APPLICATION/embedded.mobileprovision" > entitlements_full.plist
+/usr/libexec/PlistBuddy -x -c 'Print:Entitlements' entitlements_full.plist > entitlements.plist
+
+function replaceUniversalLink {
+    echo "start to replace universalLink to $UNIVERSALLINK"
+    i=0
+    filename="entitlements.plist"
+
+    # 使用 sed 循环读取文件内容
+    while IFS= read -r line; do
+    # 在这里对每一行进行处理
+        ((i++))
+        if echo "$line" | grep -q "<string>\*</string>"; then
+            ((j=i-1))
+            result=$(sed -n "${j}p" "$filename")
+            if echo "$result" | grep -q "<key>com\.apple\.developer\.associated-domains<\/key>"; then
+                echo "finded previous universalLink"
+                break
+            fi
+        fi
+    done < "$filename"
+
+    # sed -i '' "${i}s/.*/\t<array><string>${UNIVERSALLINK}<\/string><\/array>/g" "$filename"
+    sed -i '' "${i}s#.*#\t<array><string>${UNIVERSALLINK}<\/string><\/array>#g" "$filename"
+
+    echo "finished replace previous universalLink"
+}
+
+replaceUniversalLink
+
+# gen appex entitlement
+if [ "$HASNES" == 'true' ]; then
+    security cms -D -i "$temp_extracted/Payload/$APPLICATION/PlugIns/TPNSService.appex/embedded.mobileprovision" > entitlements_appex_full.plist
+    /usr/libexec/PlistBuddy -x -c 'Print:Entitlements' entitlements_appex_full.plist > entitlements_appex.plist
+fi
+
+check_if_invalid_cer() {
+    local output="$1"
+    keyword="unable to build chain to self-signed root"
+
+    echo $output
+    while IFS= read -r line; do
+        if echo "$line" | grep -q "$keyword"; then
+           echo "所选证书非有效证书，请查看「钥匙串访问」确认证书有效" >&2
+        fi
+    done <<< "$output"
+}
+
+xattr -cr ./
+
+while IFS='' read -r line || [[ -n "$line" ]]; do
+    file_name=$(basename "$line")
+    if [ "${file_name##*.}"x = "appex"x ] || [ "${file_name##*.}"x = "framework"x ]; then
+        if [ "${file_name##*.}"x = "appex"x ] && [ "$HASNES" == 'true' ]; then
+            output=$(/usr/bin/codesign --continue -f -s "$CERTIFICATENAME" --entitlements "entitlements_appex.plist" "$line" 2>&1)
+            check_if_invalid_cer "$output"
+            if [ $? -ne 0 ]; then
+                echo -e "execute codesign failed ：$CERTIFICATENAME , $line" >&2
+                exit -1
+            fi
+        else
+            output=$(/usr/bin/codesign --continue -f -s "$CERTIFICATENAME" --entitlements "$empty_plist" "$line" 2>&1)
+            check_if_invalid_cer "$output"
+            if [ $? -ne 0 ]; then
+                echo -e "execute codesign failed ：$CERTIFICATENAME , $line" >&2
+                exit -1
+            fi
+        fi
+    else
+        output=$(/usr/bin/codesign --continue -f -s "$CERTIFICATENAME" --entitlements "entitlements.plist"  "$line" 2>&1)
+        check_if_invalid_cer "$output"
+        if [ $? -ne 0 ]; then
+            echo -e "execute codesign failed ：$CERTIFICATENAME , $line" >&2
+            exit -1
+        fi
+    fi
+done < sign_items.txt
+
+bundleId=$(/usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "$temp_extracted/Payload/$APPLICATION/info.plist")
+bundleShortVersionString=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$temp_extracted/Payload/$APPLICATION/info.plist")
+
+echo "Create the Signed IPA"
+cd $temp_extracted
+zip -x "/*.cstemp" -qry ../extracted.ipa * 
+cd ..
+mv extracted.ipa $OUTPUT/$bundleId-$bundleShortVersionString.ipa
+
+rm -rf $temp_dir
+# rm sign_items.txt
+# rm entitlements.plist
+# rm entitlements_full.plist
+# if [ "$HASNES" == 'true' ]; then
+#     rm entitlements_appex_full.plist
+#     rm entitlements_appex.plist
+# fi
+# rm $empty_plist
