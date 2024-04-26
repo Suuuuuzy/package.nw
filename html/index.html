@@ -1,0 +1,93 @@
+<!DOCTYPE html><html lang=zh-CN style=border-radius:50px><head><!-- 这个会影响到窗口的标题 <title>微信开发者工具</title> --><meta charset=utf-8><script>window.tracingOrigin=Math.round(1e3*performance.now())</script><script async src=../js/core/index.js></script><link rel=stylesheet href=../static/app.css><link rel=stylesheet href=../static/dark.css><link rel=stylesheet href=../static/material.css><link rel="shortcut icon" href=../static/image/logo@2x.png><style>.ui-icon-git{-webkit-mask:url(../static/svg/git.svg) no-repeat 50% 50%;mask:url(../static/svg/git.svg) no-repeat 50% 50%;-webkit-mask-size:cover;mask-size:cover;background-color:#000}.__auto-hide-toolbar{overflow-x:hidden;flex:1}.__auto-hided{visibility:hidden}@media screen and (max-width:1090px){.toolbar-items:nth-child(3){display:flex}}@media screen and (max-width:930px){.toolbar-items:nth-child(2) .toolbar-item:nth-child(5),.toolbar-items:nth-child(2) .toolbar-item:nth-child(6){display:flex}}@media screen and (max-width:640px){.toolbar-items:nth-child(2) .toolbar-item-divider,.toolbar-items:nth-child(2) .toolbar-item:nth-child(1){display:flex}}</style></head><body class=dark><section id=fakeBackground style="transform:translate3d(0,0,0);z-index:9999;display:flex;flex-direction:column;position:fixed;left:0;right:0;top:0;bottom:0;pointer-events:none;transition:all 0s"></section><style>@keyframes fade-in{0%{opacity:0}100%{opacity:1}}.--fade-in{animation-fill-mode:forwards;animation:fade-in .4s linear}:root{--titlebar-height:30px;--titlebar-fontsize:12px}#standalone-titlebar-container{width:100%;height:var(--titlebar-height);max-height:var(--titlebar-height);overflow:hidden;-webkit-app-region:drag;-webkit-user-select:none;position:fixed;left:0;right:0;z-index:99999999}.uiv2-win-title-bar .uiv2-win-title-bar-item{-webkit-app-region:no-drag}.uiv2-win-title-bar .uiv2-win-title-bar-item{display:inline-block;line-height:var(--titlebar-height)}.uiv2-win-title-bar .uiv2-win-title-bar-item.--more{color:transparent;position:relative}.uiv2-win-title-bar .uiv2-win-title-bar-item.--auto-hide{visibility:hidden}.uiv2-win-title-bar .uiv2-win-title-bar-item.--more:after{position:absolute;top:0;overflow:hidden;content:'\00A0...';left:0;width:100%;height:100%;color:var(--FG-0);text-align:left;pointer-events:none}.uiv2-win-title-bar .uiv2-win-title-bar-menus{max-width:40%}.uiv2-win-title-bar .uiv2-win-title-bar-actions,.uiv2-win-title-bar .uiv2-win-title-bar-menus{overflow:hidden}.uiv2-win-title-bar .uiv2-win-title-bar-actions{max-width:120px}#standalone-titlebar-title{text-align:left;font-size:var(--titlebar-fontsize)}.uiv2-win-title-bar .uiv2-win-title-bar-action,.uiv2-win-title-bar-icon{-webkit-app-region:no-drag}.uiv2-win-title-bar a{-webkit-app-region:no-drag;cursor:default}.--titlebar-title-span-composite-part::after,.--titlebar-title-span-composite-part::before{font-weight:600;font-size:12px;opacity:.8;max-width:10px;overflow:hidden}.--titlebar-title-dash{margin:0 5px;color:var(--FG-3)}.--titlebar-title-primary-colored{color:var(--FG-0)}.--titlebar-title-secondary-colored{color:var(--FG-3)}.--titlebar-title-secondary-font-size{font-size:12px}.--titlebar-title-span-composite-part::before{margin-right:5px}.--titlebar-title-span-composite-part::after{margin-left:5px}.--mac-style.--dimmed{filter:grayscale(1) brightness(1.2)}.--mac-style{max-width:70px!important;-webkit-app-region:drag;-webkit-user-select:none}.--mac-style .uiv2-win-title-bar-action:hover,.--mac-style .uiv2-win-title-bar-action:last-child:hover{filter:brightness(.9)}.--mac-style .uiv2-win-title-bar-action:active,.--mac-style .uiv2-win-title-bar-action:focus,.--mac-style .uiv2-win-title-bar-action:last-child:active,.--mac-style .uiv2-win-title-bar-action:last-child:focus{filter:brightness(.8)}.--mac-style a{border-radius:50%;width:12px;padding:0;height:12px;display:inline-block;overflow:hidden;margin-right:8px;position:relative}.--mac-style a i{-webkit-mask:none;background:0 0;width:12px;height:12px;display:none}.--mac-style a[data-is=close]{background:#fd4948;border:1px solid #fd3d3d}.--mac-style a[data-is=minimize]{background:#ffb525;border:1px solid #e8a124}.--mac-style a[data-is=maximize]{background:#2ac834!important;border:1px solid #2bb52e}.--mac-style a[data-is=unmaximize]{background:#2ac834!important;border:1px solid #2bb52e}.--mac-style .uiv2-win-title-bar-action:after,.--mac-style .uiv2-win-title-bar-action:before{content:'';position:absolute;border-radius:1px;left:0;top:0;right:0;bottom:0;margin:auto}.--mac-style .uiv2-win-title-bar-action[data-is=maximize]:before{background-color:#006500;width:6px;height:6px}.--mac-style .uiv2-win-title-bar-action[data-is=maximize]:after{background-color:#28c941;width:10px;height:2px;transform:rotate(45deg)}.--mac-style .uiv2-win-title-bar-action[data-is=unmaximize]:before{width:6px;height:6px;border-left:3px solid #006500;border-right:3px solid #006500;border-bottom:3px solid #2ac834;border-top:3px solid #2ac834;transform:rotate(45deg)}.--mac-style .uiv2-win-title-bar-action[data-is=minimize]:before{background-color:#995700;width:8px;height:1px}.--mac-style .uiv2-win-title-bar-action[data-is=close]:before{background-color:#4d0000;width:8px;height:1px;transform:rotate(45deg)}.--mac-style .uiv2-win-title-bar-action[data-is=close]:after{background-color:#4d0000;width:8px;height:1px;transform:rotate(-45deg)}.--mac-style .uiv2-win-title-bar-action.--viewport-maximize[data-is=maximize]:before{background-color:#4d0000;width:8px;height:1px;transform:rotate(0)}.--mac-style .uiv2-win-title-bar-action.--viewport-maximize[data-is=maximize]:after{background-color:#4d0000;width:8px;height:1px;transform:rotate(90deg)}.--mac-style .uiv2-win-title-bar-action:after,.--mac-style .uiv2-win-title-bar-action:before{visibility:hidden}.--mac-style:active .uiv2-win-title-bar-action:after,.--mac-style:active .uiv2-win-title-bar-action:before,.--mac-style:hover .uiv2-win-title-bar-action:after,.--mac-style:hover .uiv2-win-title-bar-action:before{visibility:visible}body{font-size:11px}.mac{font-family:-apple-system,BlinkMacSystemFont,sans-serif}.mac:lang(zh-Hans){font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB",sans-serif}.windows{font-family:"Segoe WPC","Segoe UI",sans-serif}.windows:lang(zh-Hans){font-family:"Segoe WPC","Segoe UI","Microsoft YaHei",sans-serif}</style><div id=standalone-titlebar-container class=uiv2-win-title-bar style=display:none><!-- <div class="uiv2-win-title-bar-icon" id="standalone-titlebar-icon">
+      <i class="uiv2-icon-logo"></i>
+    </div> --><div id=standalone-titlebar-menus class=uiv2-win-title-bar-menus></div><div class=uiv2-win-title-bar-title><p id=standalone-titlebar-title></p></div><div id=standalone-titlebar-actions class=uiv2-win-title-bar-actions><a data-is=minimize id=standalone-titlebar-action_minimize class=uiv2-win-title-bar-action><i data-is=minimize class=uiv2-icon-minimize></i> </a><a data-is=maximize id=standalone-titlebar-action_maximize class=uiv2-win-title-bar-action><i data-is=maximize id=standalone-titlebar-action_maximize_icon class=uiv2-icon-maximize></i> </a><a data-is=close id=standalone-titlebar-action_close class=uiv2-win-title-bar-action><i data-is=close class=uiv2-icon-close></i></a></div></div><div id=container class=container style=min-width:945px></div><script>; (function() {
+      const Win = nw.Window.get()
+      if (Win) {
+        // Win.showDevTools()
+        // 迁移 titlebar.ts 中处理上次最大化的，下次打开恢复逻辑
+        Win.restore()
+        // #3807 考虑拓展屏居中
+        const realCenterX = Math.round((screen.availWidth - Win.width) / 2 + screen.availLeft || 0)
+        const realCenterY = Math.round((screen.availHeight - Win.height) / 2 + screen.availTop || 0)
+        Win.moveTo(realCenterX, realCenterY)
+      }
+    })()</script><script>function getQuery(search = '') {
+      search = search.replace(/^\?/, '')
+      let parts = search.split('&');
+      let query = {}
+      for(let i = 0, len = parts.length; i < len; i++) {
+        let part = (parts[i] || '').split('=')
+        query[part[0]] = decodeURIComponent(part[1])
+      }
+      return query
+    }
+
+    ; (function (w, d, u, search) {
+      if (!search) {
+        return
+      }
+      try {
+        const isMac = u.indexOf('Macintosh') >= 0
+        const query = getQuery(search)
+        const noFrame = (query.frame === '0')
+        global.useStandaloneMenubar = noFrame // && (search.indexOf('simple=1') < 0) && (search.indexOf('devtype=webdebugger') < 0)
+
+        const container = document.getElementById('standalone-titlebar-container')
+        const appContainer = document.getElementById('container')
+        const winActionArea = document.getElementById('standalone-titlebar-actions')
+        const fakeContainer = document.getElementById('fakeBackground')
+
+        if (query.theme === 'white') {
+          document.body.classList.remove('dark')
+        }
+
+        if (isMac) {
+          document.body.classList.add('mac')
+        } else {
+          document.body.classList.add('windows')
+        }
+
+        if (isMac && winActionArea) {
+          winActionArea.style.display = 'none'
+        }
+
+        // 加载骨架屏
+        if (fakeContainer) {
+          // 目前先内嵌写在这里，展示骨架屏内容
+          // 这些逻辑可以在 url 参数带过来
+          const fs = require('fs')
+          const skeletonPath = query.skeletonPath
+          if (skeletonPath) {
+            // 获取页面的路径
+            const content = fs.readFileSync(skeletonPath)
+            if (content) {
+              fakeContainer.innerHTML = content.toString()
+            }
+          }
+        }
+
+        if (global.useStandaloneMenubar) {
+          const inset = 30
+          if (container) {
+            container.style.display = 'flex'
+          }
+          if (appContainer) {
+            appContainer.classList.add('--has-standalone-titlebar')
+          }
+          const documentElement = document.documentElement
+          if (documentElement) {
+            documentElement.style.setProperty('--titlebar-height', inset + 'px');
+            documentElement.style.setProperty('--titlebar-fontsize', 13 + 'px');
+          }
+          if (fakeContainer) {
+            fakeContainer.style.transform = `translateY(${inset}px)`
+          }
+          window.appRegionInset = inset
+        } else {
+          if (container) {
+            container.style.display = 'none'
+          }
+        }
+      } catch (err) {}
+
+    })(window, document, navigator.userAgent, location.search);</script></body></html>

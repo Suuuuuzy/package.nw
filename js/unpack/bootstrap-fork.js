@@ -1,0 +1,1 @@
+"use strict";require('../../js/unpack/hackrequire/index.js');require('../../core.wxvpkg/559df4d756d462bed5fd7de7a89cc084.js')(()=>{require('../../core.wxvpkg/66696ade8dae83d46c20c45394f22b2f.js')});

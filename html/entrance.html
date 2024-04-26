@@ -1,0 +1,22 @@
+<!DOCTYPE html><html lang=zh-CN style=border-radius:50px><head><meta charset=utf-8><script>window.tracingOrigin=Math.round(1e3*performance.now())</script><script async src=../js/core/entrance.js></script><link rel=stylesheet href=../static/app.css><link rel=stylesheet href=../static/dark.css><link rel=stylesheet href=../static/material.css><link rel="shortcut icon" href=../static/image/logo@2x.png><style>.ui-icon-git{-webkit-mask:url(../static/svg/git.svg) no-repeat 50% 50%;mask:url(../static/svg/git.svg) no-repeat 50% 50%;-webkit-mask-size:cover;mask-size:cover;background-color:#000}.__auto-hide-toolbar{overflow-x:hidden;flex:1}.__auto-hided{visibility:hidden}@media screen and (max-width:1090px){.toolbar-items:nth-child(3){display:flex}}@media screen and (max-width:930px){.toolbar-items:nth-child(2) .toolbar-item:nth-child(5),.toolbar-items:nth-child(2) .toolbar-item:nth-child(6){display:flex}}@media screen and (max-width:640px){.toolbar-items:nth-child(2) .toolbar-item-divider,.toolbar-items:nth-child(2) .toolbar-item:nth-child(1){display:flex}}@media screen and (max-width:360px){#fakeBackground{display:none!important}}</style></head><body class=dark><section id=fakeBackground style="transform:translate3d(0,0,0);z-index:9999;flex-direction:column;position:fixed;left:0;right:0;top:0;bottom:0;pointer-events:none;transition:all 1s;display:flex;outline:0"><div class=dashboard style=-webkit-app-region:drag;flex-direction:initial><div class=dashboard-hd><div class="title-bar ui-flex" style=height:30px></div><div class=dashboard-search><i class=uiv2-icon-search></i><input class=ui-input placeholder=输入项目名称 value=""></div><div class=dashboard-navigator><section class=dashboard-menu><div class=dashboard-menu-title>小程序项目</div><div><div class=dashboard-menu-item>小程序</div><div class=dashboard-menu-item>小游戏</div><div class=dashboard-menu-item>代码片段</div></div></section><section class=dashboard-menu><div class=dashboard-menu-title>公众号网页项目</div></section><section class=dashboard-menu><div class=dashboard-menu-title>其他</div></section></div></div><div class=dashboard-bd><div class=dashboard-toolbar></div></div></div></section><script>// require('nw.gui').Window.get().showDevTools();
+    try {
+      // 事实上目前 entrance location.search 是拿不到 theme，只能 尝试从 localstorage 拿
+      const settinsStr = localStorage.getItem('reduxPersist:settings') || '{}'
+      const settings = JSON.parse(settinsStr)
+      const theme = settings.appearance.theme
+      if (theme === "white") {
+        document.body.classList.remove("dark");
+      }
+    } catch (err) {
+      console.log(err)
+    }</script><div id=container class=container></div><script>(function () {
+      const Win = nw.Window.get();
+      if (Win) {
+        // 项目列表窗口不允许 resize 需要提前禁止
+        Win.setResizable(false)
+        // #3807 考虑拓展屏居中
+        const realCenterX = Math.round((screen.availWidth - Win.width) / 2 + screen.availLeft || 0)
+        const realCenterY = Math.round((screen.availHeight - Win.height) / 2 + screen.availTop || 0)
+        Win.moveTo(realCenterX, realCenterY)
+      }
+    })();</script></body></html>

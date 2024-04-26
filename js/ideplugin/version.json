@@ -1,0 +1,68 @@
+[
+  {
+    "plugin_id": "cloudconsolev1",
+    "download_url": "https://dldir1.qq.com/WechatWebDev/plugins/versions/cloudconsolev1.release-1.5.46-83a9bf.wxvpkg.gzip",
+    "checksum": "eEUThEq5QOddKNnTFURaf+mBVXibWP2vYhKLaeQN7p/zNjCM4OX6GkguA3u82xUfyKtewa3uhfz75VyeI6WGMKkiJHzQWOtbE4y/G1PJS37zVdHNi/Qir7apGG+7ORJWzeQ0gaXHNsnjw4QFiB4s+/p+Mkx8jGSFCCodLTxnAt0=",
+    "version": "1.5.46"
+  },
+  {
+    "plugin_id": "api-mock",
+    "download_url": "https://dldir1.qq.com/WechatWebDev/plugins/versions/api-mock.release-1.0.5-b21259.wxvpkg.gzip",
+    "checksum": "M+swD1okpNn/B1QcKguabRHnHn25cl+mHHu/9qO5hdmiQ0C/PsnLvjT9rJiYt9kz1YylMtDtSBgk9GBJ77tMNQToM2QHGYSyEuXzOS8xKe7VINOG2wvZOOUK+hV6QL45sJqJox0LItGlxzV7o0BCM7T7PX7jFNWjIu2MedkmZv0=",
+    "version": "1.0.5"
+  },
+  {
+    "plugin_id": "audits",
+    "download_url": "https://dldir1.qq.com/WechatWebDev/plugins/versions/audits.release-0.0.95-859e86.wxvpkg.gzip",
+    "checksum": "cdABwSzkE65B3bwZk+Pcoi8vJ1RzKFsIeVqj02k6nIfQp4a1LdBuWg3uyd3O6WflRS3NtzzBVgZwmtbCa4SEcRvMotoWg6/hr1ADnNfJ645J/ZYjq3HA3wTFFctlqWBQAIp2zEAIvEg16qqxqeLpIylH65JusjW2IsZIBtSlLmc=",
+    "version": "0.0.95"
+  },
+  {
+    "plugin_id": "gameide",
+    "download_url": "https://dldir1.qq.com/WechatWebDev/plugins/versions/gameide.release-0.0.16.wxvpkg.gzip",
+    "checksum": "Xw0I2+SXRu/mwOPUKEthVpbjNFh7aD2zA1gCdlo4LLJS6YMcECE7/D+us1M8x2w1geZH2CtGd/CUVrCm/jVWtFangbCsPb/Fz17Lm3TZviQa6hn8ddSOE62xZ5TgJS3YqhRK0z2eVquq+pLU5na6XIkKO0y2IXAjtWyBsq6PQI4=",
+    "version": "0.0.16"
+  },
+  {
+    "plugin_id": "search",
+    "download_url": "https://dldir1.qq.com/WechatWebDev/plugins/versions/search.release-1.0.1.wxvpkg.gzip",
+    "checksum": "UO6iPd/bwBdfbBMrALq6BFJL1MFwR5T5EKbjhhwTrPpFtPW3xNoc9aBCgzKQ+Pt2v2KEOABinJBeEFnQqfuC36E/0bFkRitzEHUve/Vvy/iTMeNPYNI0gEPGn4LZ3rRr0dJLaBb5TAQ8hvtLevGQxDNwuhNCRJcIZjtNL62XuAo=",
+    "version": "1.0.1"
+  },
+  {
+    "plugin_id": "trace",
+    "download_url": "https://dldir1.qq.com/WechatWebDev/plugins/versions/trace.release-0.0.5-c80899.wxvpkg.gzip",
+    "checksum": "QuIckgKz8OoJD8H4WyyoAbKL2WmvP/DYoJ1kZXSPBCrEo4x//eRAZThI8d6c2uHSk6RfmUPeUqOyqxA5AZJAn3ZRhD0p1rlbp2C9Lo63dzBSlzAU5QN8sCPMGL2mda/11bn7wt8CL31K3f1HeI0O8afKqnfOXrgN7rClPNjXdx8=",
+    "version": "0.0.5"
+  },
+  {
+    "plugin_id": "appdata",
+    "download_url": "https://dldir1.qq.com/WechatWebDev/plugins/versions/appdata.release-0.0.7-83d4f7.wxvpkg.gzip",
+    "checksum": "WLuMWZjiRPkGAJL7b4pMhc7X3S46eC8eBdRHh+jMeTKq3ptKME0TyO0jRgl4b5VY47mBerLNceJZYCVtB6JQbfWfQlPv3Xe107SM6H+K5bxjMBbEACg+O1tCBsH2Q1ylNswycCaksbAZNLi6bXXEmAgXfCKK3hR20VC0uPHAVp0=",
+    "version": "0.0.7"
+  },
+  {
+    "plugin_id": "sensor",
+    "download_url": "https://dldir1.qq.com/WechatWebDev/plugins/versions/sensor.release-0.0.5-42a988.wxvpkg.gzip",
+    "checksum": "UPtOrwcXu1lQV8zHuMxVufuzcu0R8we/kKYneN6h1OTUZTANzaqb4dwph0CO5jrJuYYMwp+sN+zH5VwHKlyNyiBkDgL2gSBmdrAzpIjjdYoWwHyT0PEb9FmsNVshmIoti89+j2prxJnBw1oFYbkcRxledATNwLw9r3AF5MDAfOg=",
+    "version": "0.0.5"
+  },
+  {
+    "plugin_id": "storage",
+    "download_url": "https://dldir1.qq.com/WechatWebDev/plugins/versions/storage.release-0.0.5-03dd4d.wxvpkg.gzip",
+    "checksum": "QsmVhM1++lkPFl+p80Y3/GiwiBb2QJMtg8COEAxODRT9U+CS35j1s+8y7D0nfJ4fwu9dsMR8RmMxJCY4Umg5dhB19oXvsByO5waCbr5Se6/wXnoR90qMwdariiuMBnVVNTRslbbbvdyr8zr6q1qG7fUuKMW2JHnfRp+7a48cgx8=",
+    "version": "0.0.5"
+  },
+  {
+    "plugin_id": "inspector",
+    "download_url": "https://dldir1.qq.com/WechatWebDev/plugins/versions/inspector.release-0.11.11-af0cf6.wxvpkg.gzip",
+    "checksum": "VJUzeqyqheHrmR3xWtaoObY0TrDd9TAIzXxUi4MDjVAd1sVkPG+svQSH1ma2NWdwIl8IPtVIAiz1SVSiBb5uzWdu8mMlG6QpZhsE9sMR9BU69U/D25H3+uu4ueZooinfvUSxluZQhFujJxmZLuAX+pKhEQRXxSLCvmiSAiy8cmU=",
+    "version": "0.11.11"
+  },
+  {
+    "plugin_id": "wx-page-types",
+    "download_url": "https://dldir1.qq.com/WechatWebDev/plugins/versions/wx-page-types.release-1.0.2-7822ff.wxvpkg.gzip",
+    "checksum": "UqPbCoSg8dM1FqyNUFIXpu+aECC/xhipluKwaVOKWP4gCwIu3PTaEZrjPRJ7zLi7LWRwg62oBQiIiVVcPr8n1rmOlO6mObQVAB5cuz5hLmWWLWGJa94qmxgxHXJUWE+Y+RG9Rfv0TA5b+iHXnOFJ2WFuUCIyrVcgKa71ZOEeDhM=",
+    "version": "1.0.2"
+  }
+]

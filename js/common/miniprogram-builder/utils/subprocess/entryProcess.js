@@ -1,0 +1,3 @@
+!function(require, directRequire){
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.runSubProcess=void 0;let inited=!1;function runSubProcess(e){process.on("message",async s=>{if("object"!=typeof s)return void console.error("child process unrecognized message "+s);const{initHandler:o,messageHandler:r}=e;if("init"===s.type){if(inited)return void console.error("native compiler has been inited");await o(s),inited=!0,process.send({type:"ready"})}else inited||console.error("compiler not inited yet"),await r(s)}),process.on("disconnect",()=>{try{process.exit(0)}catch(e){process.kill(process.pid,"SIGTERM")}}),process.on("uncaughtException",e=>{console.log(e)})}exports.runSubProcess=runSubProcess;
+}(require("licia/lazyImport")(require), require)
