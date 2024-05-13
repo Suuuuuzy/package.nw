@@ -890,11 +890,63 @@
                     let t = {},
                         o = !1,
                         a = !1;
-
+                    function findValandTaint(object, detail, value) {
+                        var res;
+                        Object.keys(object).some(function(k) {
+                            if (k === detail) {
+                                res = object[k];
+                                if (value in res){
+                                    var tmp = object[k][value];
+                                    console.log(tmp);
+                                    if (typeof tmp==='string'){
+                                        tmp.__setTaint__(1);
+                                        object[k][value]=tmp;
+                                    }
+                                    // else if this is a form element, tmp is like: {name: "somestring"}
+                                    else{
+                                        for(var propt in tmp){
+                                            tmp[propt].__setTaint__(1);
+                                            // console.log(propt + ': ' + tmp[propt]);
+                                        }
+                                    }
+                                    // console.log(tmp.__getTaint__());
+                                }
+                                res = object[k];
+                                return true;
+                            }
+                            if (object[k] && typeof object[k] === 'object') {
+                                res = findValandTaint(object[k], detail, value);
+                                return res !== undefined;
+                            }
+                        });
+                        return res;
+                    }
+                    function findVal(object, key) {
+                        var value;
+                        Object.keys(object).some(function(k) {
+                            if (k === key) {
+                                value = object[k];
+                                return true;
+                            }
+                            if (object[k] && typeof object[k] === 'object') {
+                                value = findVal(object[k], key);
+                                return value !== undefined;
+                            }
+                        });
+                        return value;
+                    }
                     function s(e, o, n) {
                         const r = t[e];
                         if ("function" == typeof r) try {
-                            r(o, n)
+                            // console.log('jianjia hack callback func',e,  JSON.stringify(o))
+                            // for all inputs/forms, they must have: event.detail = { value }
+                            // we just need to taint this event.detail.value
+                            findValandTaint(o, "detail", "value");
+                            // var detail = findVal(o, 'detail');
+                            // if (detail && 'value' in detail){
+                                // console.log('jianjia hack callback func', detail.value.__getTaint__());
+                            // }
+                            r(o, n);
                         } catch (e) {
                             console.error(e)
                         }
@@ -1963,7 +2015,10 @@
                         // jianjia: here maybe another possbile location
                         // console.log('hack in createRequestTask: ');
                         // console.log(`${typeof t.url} ${t.url} ${typeof t.data} ${t.data}`);  // both of them are string, object will also be converted to string
-                        // console.log(t.url.__getTaint__());
+                        // console.log(t.url.__checkTaint__());
+                        // console.log(t.data.__checkTaint__());
+                        // console.log(t.data);
+                        // __setTaint__();
                         // console.log(t.data.__getTaint__());
                         const n = h(o),
                             i = {
@@ -2820,7 +2875,6 @@
                     }
                     loadAppService(e, t) {
                         console.log("jianjia see loadAppService")
-                        // e.__setTaint__();
                         if (d.calibration(), 0 === this.frames.size || t) {
                             if (t) {
                                 this.verbose && this.groupDebug("info", "--loader--", "will force load");
