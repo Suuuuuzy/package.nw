@@ -897,19 +897,20 @@
                                 res = object[k];
                                 if (value in res){
                                     var tmp = object[k][value];
-                                    console.log(tmp);
+                                    // console.log(tmp);
                                     if (typeof tmp==='string'){
-                                        tmp.__setTaint__(1);
-                                        object[k][value]=tmp;
+                                        object[k][value].__setTaint__(1);
                                     }
                                     // else if this is a form element, tmp is like: {name: "somestring"}
-                                    else{
+                                    else if (typeof tmp==='object'){
                                         for(var propt in tmp){
-                                            tmp[propt].__setTaint__(1);
+                                            // do this for now, we don't know how to treat els like checkbox
+                                            if (typeof tmp[propt]==='string'){
+                                                tmp[propt].__setTaint__(1);
+                                            }
                                             // console.log(propt + ': ' + tmp[propt]);
                                         }
                                     }
-                                    // console.log(tmp.__getTaint__());
                                 }
                                 res = object[k];
                                 return true;
@@ -2012,14 +2013,6 @@
                 e.exports = {
                     request: b,
                     createRequestTask: (e, t, o) => {
-                        // jianjia: here maybe another possbile location
-                        // console.log('hack in createRequestTask: ');
-                        // console.log(`${typeof t.url} ${t.url} ${typeof t.data} ${t.data}`);  // both of them are string, object will also be converted to string
-                        // console.log(t.url.__checkTaint__());
-                        // console.log(t.data.__checkTaint__());
-                        // console.log(t.data);
-                        // __setTaint__();
-                        // console.log(t.data.__getTaint__());
                         const n = h(o),
                             i = {
                                 id: g++,
