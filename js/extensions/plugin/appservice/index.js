@@ -2524,11 +2524,12 @@
 									"chooseVideo", "chooseMedia", "getFileInfo", "startRecord",
 									"chooseAddress", 
 									"getWeRunData", "chooseInvoiceTitle", "chooseInvoice", "chooseContact"],
-					cocoSinks = [   "request",
-									"uploadFile",
-									"navigateToMiniProgram",
-									"sendSocketMessage",
-									"createUDPSocket"],
+					cocoSinks = {   "request":["url"],
+									"uploadFile":["url", "filePath", "name"],
+									// extraData is an object
+									"navigateToMiniProgram":["appId", "path", "extraData"],
+									"sendSocketMessage":["data"],
+									"createUDPSocket":[]},
 					cocoOnShow = ["onShow", "getLaunchOptionsSync", "onAppShow"],
 					cocoCallbacks = ["success", "fail", "complete"],	
 					taintCallbacks = function(args){
@@ -2559,51 +2560,28 @@
 										var i, l;
 										const f = null === (l = (i = top.__global).getHookMethodsCache) || void 0 === l ? void 0 : l.call(i);
 										// console.log('jianjia see API name and args: ' + o + JSON.stringify(s));
-										if (cocoOnShow.indexOf(o)!==-1){
-											// wx.getLaunchOptionsSync(): 
-											// it has no parameters, the return value should be tainted
-										}
-										else if (cocoSources.indexOf(o)!== -1){
+										if (cocoSources.indexOf(o)!== -1){
 											console.log('jianjia: taint source hit, API name and args: ' + o + JSON.stringify(s));
 											if (s.length>0){
 												s[0] = taintCallbacks(s[0]);
 											}
 										}
-										else if (cocoSinks.indexOf(o)!== -1){
+										else if (cocoSinks.hasOwnProperty(o)){
 											console.log("jianjia: taint sink hit", o, JSON.stringify(s))
-											switch (o){
-												case "request":
-													s[0]["url"].__checkTaint__();
-													// data: string/object/ArrayBuffer	
-													// header: object
-													break;
-												case "uploadFile":
-													s[0]["url"].__checkTaint__();
-													s[0]["filePath"].__checkTaint__();
-													s[0]["name"].__checkTaint__();
-													// s[0]["formData"].__checkTaint__(); formData: object
-													break;
-												case "navigateToMiniProgram":
-													// s[0]["appId"], s[0]["path"]: string
-													// s[0]["extraData"], s[0]["shortLink"] : object
-													s[0]["appId"].__checkTaint__();
-													s[0]["path"].__checkTaint__();
-													if (typeof s[0]["extraData"] == "string"){
-														s[0]["extraData"].__checkTaint__();
-													}
-													break;
-												case "sendSocketMessage":
-													s[0]["data"].__checkTaint__(); // data: string/ArrayBuffer
-													break;
-												case "createUDPSocket":
-													break;
+											for (var index in cocoSinks[o]){
+												var prop_val = cocoSinks[o][index];
+												if (typeof s[0][prop_val]==='string'){
+													s[0][prop_val].__checkTaint__();
+												}
 											}
 										}
 										if (!t.hasOwnProperty(o) || !f || 0 === Object.keys(f).length) {
 											var res = n.apply(e, s);
 											if (cocoOnShow.indexOf(o)!== -1){
 												console.log('cocoOnShow: ', res);
-												console.log(res.path.__getTaint__());
+												if (typeof res.path==='string'){
+													console.log(res.path.__getTaint__());
+												}
 												// __setTaint__(res, 1);
 											}
 											return res;
