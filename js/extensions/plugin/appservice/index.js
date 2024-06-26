@@ -2521,23 +2521,25 @@
 									"getUserInfo", "getUserProfile",
 									"getLocation", "onLocationChange", "startLocationUpdate", "startLocationUpdateBackground",
 									"getNetworkType", "createCameraContext", "getBLEDeviceCharacteristics", "getConnectedWifi",
-									"chooseVideo", "chooseMedia", "getFileInfo", "startRecord",
+									"chooseVideo", "chooseMedia", "getFileInfo", "startRecord", "chooseImage",
 									"chooseAddress", 
 									"getWeRunData", "chooseInvoiceTitle", "chooseInvoice", "chooseContact"],
-					cocoSinks = {   "request":["url"],
+					cocoSinks = {   "request":["url"], // now we only focus on url manipulation. BTW, why is "data" dangerous?
 									"uploadFile":["url", "filePath", "name"],
-									// extraData is an object
-									"navigateToMiniProgram":["appId", "path", "extraData"],
+									"navigateToMiniProgram":["appId", "path", "extraData"], // extraData is an object
 									"sendSocketMessage":["data"],
-									"createUDPSocket":[]},
-					cocoOnShow = ["onShow", "getLaunchOptionsSync", "onAppShow"],
+									"createUDPSocket":[],
+									"writeBLECharacteristicValue":["deviceId", "serviceId", "characteristicId", "value"]}, // value is an ArrayBuffer, do we support taint for ArrayBuffer?
+					cocoOnShow = ["onShow", "getLaunchOptionsSync", "onAppShow", "getEnterOptionsSync"],
+					// navigateTo: url, redirectTo: url, switchTab: url, reLaunch: url
+					miniumNavigate =["navigateTo", "redirectTo", "switchTab", "reLaunch"],
 					cocoCallbacks = ["success", "fail", "complete"],	
 					taintCallbacks = function(args){
 						for (const i in cocoCallbacks){
 							if (args.hasOwnProperty(cocoCallbacks[i])){
 								var tmp = args[cocoCallbacks[i]];
 								args[cocoCallbacks[i]] = function(res){
-									__setTaint__(res, 1); 
+									__setTaint__(res, __taintConstants__()['WechatAPI']); 
 									// console.log('hack source');
 									tmp(res); 
 								}
@@ -2559,7 +2561,7 @@
 									value(...s) {
 										var i, l;
 										const f = null === (l = (i = top.__global).getHookMethodsCache) || void 0 === l ? void 0 : l.call(i);
-										// console.log('jianjia see API name and args: ' + o + JSON.stringify(s));
+										console.log('jianjia see all API name and args: ' + o + JSON.stringify(s));
 										if (cocoSources.indexOf(o)!== -1){
 											console.log('jianjia: taint source hit, API name and args: ' + o + JSON.stringify(s));
 											if (s.length>0){
@@ -2575,15 +2577,14 @@
 												}
 											}
 										}
+										else if (miniumNavigate.indexOf(o)!== -1){
+											s[0]["url"].__setTaint__(__taintConstants__()['OnLaunch'])
+										}
+										else if (cocoOnShow.indexOf(o)!== -1){
+											console.log('cocoOnShow: ', res);
+										}
 										if (!t.hasOwnProperty(o) || !f || 0 === Object.keys(f).length) {
 											var res = n.apply(e, s);
-											if (cocoOnShow.indexOf(o)!== -1){
-												console.log('cocoOnShow: ', res);
-												if (typeof res.path==='string'){
-													console.log(res.path.__getTaint__());
-												}
-												// __setTaint__(res, 1);
-											}
 											return res;
 										} // jianjia: here may return error, so we check before this
                                         const v = t[o],
