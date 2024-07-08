@@ -723,6 +723,24 @@
                     function c(e, r, i) {
                         if (o) return void console.warn("[memory-leak] triggerOnEvent called on a deprecated instance");
                         t.triggerWorkerEvent && "function" == typeof t.triggerWorkerEvent && t.triggerWorkerEvent(e, n(r));
+                        // yjj start
+                        console.log("jianjia in js/extensions/appservice/index.js", r);
+                        if ("appLaunchInfo" in r){
+                            console.log(r["appLaunchInfo"]);
+                            r["appLaunchInfo"]["query"] = {"fakeKey":"fakeValue"};
+                            __setTaint__(r["appLaunchInfo"]["query"], __taintConstants__()['OnLaunch']);
+                        }
+                        var openTypeList = ["navigateTo"];
+                        if ("openType" in r){
+                            if (openTypeList.indexOf(r["openType"])!=-1){
+                                if ("query" in r){
+                                    if ("fakeKey" in r["query"]){
+                                        __setTaint__(r["query"], __taintConstants__()['OnLaunch']);
+                                    }
+                                }
+                            }
+                        }
+                        // yjj end
                         const a = t[e];
                         if ("function" == typeof a) try {
                             a(r, i)
@@ -890,64 +908,57 @@
                     let t = {},
                         o = !1,
                         a = !1;
-                    function findValandTaint(object, detail, value) {
-                        var res;
-                        Object.keys(object).some(function(k) {
-                            if (k === detail) {
-                                res = object[k];
-                                if (value in res){
-                                    var tmp = object[k][value];
-                                    // console.log(tmp);
-                                    if (typeof tmp==='string'){
-                                        object[k][value].__setTaint__(1);
-                                    }
-                                    // else if this is a form element, tmp is like: {name: "somestring"}
-                                    else if (typeof tmp==='object'){
-                                        for(var propt in tmp){
-                                            // do this for now, we don't know how to treat els like checkbox
-                                            if (typeof tmp[propt]==='string'){
-                                                tmp[propt].__setTaint__(1);
+                        function findValandTaint(object, detail, value) {
+                            var res;
+                            Object.keys(object).some(function(k) {
+                                if (k === detail) {
+                                    res = object[k];
+                                    if (value in res){
+                                        var tmp = object[k][value];
+                                        // console.log(tmp);
+                                        if (typeof tmp==='string'){
+                                            object[k][value].__setTaint__(1);
+                                        }
+                                        // else if this is a form element, tmp is like: {name: "somestring"}
+                                        else if (typeof tmp==='object'){
+                                            for(var propt in tmp){
+                                                // do this for now, we don't know how to treat els like checkbox
+                                                if (typeof tmp[propt]==='string'){
+                                                    tmp[propt].__setTaint__(1);
+                                                }
+                                                // console.log(propt + ': ' + tmp[propt]);
                                             }
-                                            // console.log(propt + ': ' + tmp[propt]);
                                         }
                                     }
+                                    res = object[k];
+                                    return true;
                                 }
-                                res = object[k];
-                                return true;
-                            }
-                            if (object[k] && typeof object[k] === 'object') {
-                                res = findValandTaint(object[k], detail, value);
-                                return res !== undefined;
-                            }
-                        });
-                        return res;
-                    }
-                    function findVal(object, key) {
-                        var value;
-                        Object.keys(object).some(function(k) {
-                            if (k === key) {
-                                value = object[k];
-                                return true;
-                            }
-                            if (object[k] && typeof object[k] === 'object') {
-                                value = findVal(object[k], key);
-                                return value !== undefined;
-                            }
-                        });
-                        return value;
-                    }
+                                if (object[k] && typeof object[k] === 'object') {
+                                    res = findValandTaint(object[k], detail, value);
+                                    return res !== undefined;
+                                }
+                            });
+                            return res;
+                        }
+                        function findVal(object, key) {
+                            var value;
+                            Object.keys(object).some(function(k) {
+                                if (k === key) {
+                                    value = object[k];
+                                    return true;
+                                }
+                                if (object[k] && typeof object[k] === 'object') {
+                                    value = findVal(object[k], key);
+                                    return value !== undefined;
+                                }
+                            });
+                            return value;
+                        }
                     function s(e, o, n) {
                         const r = t[e];
                         if ("function" == typeof r) try {
-                            // console.log('jianjia hack callback func',e,  JSON.stringify(o))
-                            // for all inputs/forms, they must have: event.detail = { value }
-                            // we just need to taint this event.detail.value
                             findValandTaint(o, "detail", "value");
-                            // var detail = findVal(o, 'detail');
-                            // if (detail && 'value' in detail){
-                                // console.log('jianjia hack callback func', detail.value.__getTaint__());
-                            // }
-                            r(o, n);
+                            r(o, n)
                         } catch (e) {
                             console.error(e)
                         }
@@ -2867,7 +2878,6 @@
                         return this.frames.has(e) && this.currentFrameId === e
                     }
                     loadAppService(e, t) {
-                        console.log("jianjia see loadAppService")
                         if (d.calibration(), 0 === this.frames.size || t) {
                             if (t) {
                                 this.verbose && this.groupDebug("info", "--loader--", "will force load");
@@ -3639,8 +3649,7 @@
                             for (const {
                                     event: e,
                                     fn: t
-                                }
-                                of this.instanceScopeListeners) this.off(e, t);
+                                } of this.instanceScopeListeners) this.off(e, t);
                             this.instanceScopeListeners.clear()
                         }))
                     }
@@ -4405,8 +4414,6 @@
                                 }
                             },
                             checkUrl: (e, t = "request") => {
-                                    // jianjia: we can add here one check for the url, to see whether the url is tainted
-                                    // console.log('jianjia hack in checkUrl');
                                     if (n.isTourist()) return f && (console.group(`${new Date} 无 AppID 关联`), console.warn("工具未检查合法域名，更多请参考文档：https://developers.weixin.qq.com/miniprogram/dev/framework/ability/network.html"), console.groupEnd(), f = !1), !0;
                                     if (!r.DevtoolsConfig.urlCheck) return window.__disPlayURLCheckWarning && (console.group(`${new Date} 配置中关闭合法域名、web-view（业务域名）、TLS 版本以及 HTTPS 证书检查`), console.warn("工具未校验合法域名、web-view（业务域名）、TLS 版本以及 HTTPS 证书。"), console.groupEnd(), window.__disPlayURLCheckWarning = !1), !0;
                                     if (!e) return !1;
