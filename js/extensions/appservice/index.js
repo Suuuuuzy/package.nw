@@ -730,7 +730,7 @@
                             r["appLaunchInfo"]["query"] = {"fakeKey":"fakeValue"};
                             __setTaint__(r["appLaunchInfo"]["query"], __taintConstants__()['OnLaunch']);
                         }
-                        var openTypeList = ["navigateTo"];
+                        var openTypeList = ["navigateTo", "redirectTo", "switchTab", "navigateBack", "reLaunch"];
                         if ("openType" in r){
                             if (openTypeList.indexOf(r["openType"])!=-1){
                                 if ("query" in r){
