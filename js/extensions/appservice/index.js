@@ -917,14 +917,14 @@
                                         var tmp = object[k][value];
                                         // console.log(tmp);
                                         if (typeof tmp==='string'){
-                                            object[k][value].__setTaint__(1);
+                                            object[k][value].__setTaint__(__taintConstants__()['InputBox']);
                                         }
                                         // else if this is a form element, tmp is like: {name: "somestring"}
                                         else if (typeof tmp==='object'){
                                             for(var propt in tmp){
                                                 // do this for now, we don't know how to treat els like checkbox
                                                 if (typeof tmp[propt]==='string'){
-                                                    tmp[propt].__setTaint__(1);
+                                                    tmp[propt].__setTaint__(__taintConstants__()['FormSubmit']);
                                                 }
                                                 // console.log(propt + ': ' + tmp[propt]);
                                             }
@@ -957,7 +957,14 @@
                     function s(e, o, n) {
                         const r = t[e];
                         if ("function" == typeof r) try {
+                            // console.log('debug hack callback func', e,  JSON.stringify(o));
+                            // for all inputs/forms, they must have: event.detail = { value }
+                            // we just need to taint this event.detail.value
                             findValandTaint(o, "detail", "value");
+                            // var detail = findVal(o, 'detail');
+                            // if (detail && 'value' in detail){
+                            //     console.log('debug after hack callback', detail.value.__getTaint__());
+                            // }
                             r(o, n)
                         } catch (e) {
                             console.error(e)
