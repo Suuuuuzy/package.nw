@@ -724,17 +724,25 @@
                         if (o) return void console.warn("[memory-leak] triggerOnEvent called on a deprecated instance");
                         t.triggerWorkerEvent && "function" == typeof t.triggerWorkerEvent && t.triggerWorkerEvent(e, n(r));
                         // yjj start
-                        console.log("jianjia in js/extensions/appservice/index.js", r);
+                        // console.log("jianjia in js/extensions/appservice/index.js", r);
                         if ("appLaunchInfo" in r){
                             console.log(r["appLaunchInfo"]);
                             r["appLaunchInfo"]["query"] = {"fakeKey":"fakeValue"};
                             __setTaint__(r["appLaunchInfo"]["query"], __taintConstants__()['OnLaunch']);
                         }
-                        var openTypeList = ["navigateTo", "redirectTo", "switchTab", "navigateBack", "reLaunch"];
+                        var openTypeList = ["navigateTo", "redirectTo", "switchTab", "navigateBack", "reLaunch", "appLaunch"];
                         if ("openType" in r){
                             if (openTypeList.indexOf(r["openType"])!=-1){
-                                if ("query" in r){
-                                    if ("fakeKey" in r["query"]){
+                                // if ("query" in r){ 
+                                //     var key = "fakeKey";
+                                //     key.__setTaint__(__taintConstants__()['OnLaunch']);
+                                //     var value = "fakeValue";
+                                //     value.__setTaint__(__taintConstants__()['OnLaunch']);
+                                //     r["query"][key] = value;
+                                // }
+                                // __setTaint__(r["query"], __taintConstants__()['OnLaunch']);
+                                if ("query" in r){ 
+                                    if ("fakeKey" in r["query"]){ // this is to differenciate from the page routings from original code
                                         __setTaint__(r["query"], __taintConstants__()['OnLaunch']);
                                     }
                                 }
@@ -908,25 +916,36 @@
                     let t = {},
                         o = !1,
                         a = !1;
-                        function findValandTaint(object, detail, value) {
+                        function findValandTaint(object, detail, value, taintType) {
                             var res;
                             Object.keys(object).some(function(k) {
                                 if (k === detail) {
                                     res = object[k];
-                                    if (value in res){
-                                        var tmp = object[k][value];
-                                        // console.log(tmp);
-                                        if (typeof tmp==='string'){
-                                            object[k][value].__setTaint__(__taintConstants__()['InputBox']);
+                                    if (Array.isArray(value)){
+                                        for (const element of value){
+                                            object[k][element].__setTaint__(taintType);
                                         }
-                                        // else if this is a form element, tmp is like: {name: "somestring"}
-                                        else if (typeof tmp==='object'){
-                                            for(var propt in tmp){
-                                                // do this for now, we don't know how to treat els like checkbox
-                                                if (typeof tmp[propt]==='string'){
-                                                    tmp[propt].__setTaint__(__taintConstants__()['FormSubmit']);
+                                    }
+                                    else{
+                                        if (value in res){
+                                            var tmp = object[k][value];
+                                            if (typeof tmp==='string'){
+                                                if (taintType===undefined){
+                                                    taintType = __taintConstants__()['InputBox'];
                                                 }
-                                                // console.log(propt + ': ' + tmp[propt]);
+                                                object[k][value].__setTaint__(taintType);
+                                            }
+                                            // else if this is a form element, tmp is like: {name: "somestring"}
+                                            else if (typeof tmp==='object'){
+                                                for(var propt in tmp){
+                                                    // do this for now, we don't know how to treat els like checkbox
+                                                    if (typeof tmp[propt]==='string'){
+                                                        if (taintType===undefined){
+                                                            taintType = __taintConstants__()['FormSubmit'];
+                                                        }
+                                                        tmp[propt].__setTaint__(taintType);
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -934,7 +953,7 @@
                                     return true;
                                 }
                                 if (object[k] && typeof object[k] === 'object') {
-                                    res = findValandTaint(object[k], detail, value);
+                                    res = findValandTaint(object[k], detail, value, taintType);
                                     return res !== undefined;
                                 }
                             });
@@ -961,6 +980,9 @@
                             // for all inputs/forms, they must have: event.detail = { value }
                             // we just need to taint this event.detail.value
                             findValandTaint(o, "detail", "value");
+                            findValandTaint(o, "detail", "rawData", __taintConstants__()['WechatAPI']);
+                            const userInfoItems = ["nickName", "avatarUrl", "province", "city", "country"]; // we can not taint gender cause it's number
+                            findValandTaint(o, "userInfo", userInfoItems, __taintConstants__()['WechatAPI']);
                             // var detail = findVal(o, 'detail');
                             // if (detail && 'value' in detail){
                             //     console.log('debug after hack callback', detail.value.__getTaint__());
