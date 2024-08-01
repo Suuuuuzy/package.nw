@@ -723,6 +723,33 @@
                     function c(e, r, i) {
                         if (o) return void console.warn("[memory-leak] triggerOnEvent called on a deprecated instance");
                         t.triggerWorkerEvent && "function" == typeof t.triggerWorkerEvent && t.triggerWorkerEvent(e, n(r));
+                        // yjj start
+                        // console.log("jianjia in js/extensions/appservice/index.js", r);
+                        if ("appLaunchInfo" in r){
+                            console.log(r["appLaunchInfo"]);
+                            r["appLaunchInfo"]["query"] = {};
+                            console.log(r["appLaunchInfo"]["query"]);
+                            var fakeKey = 'fakeKey';
+                            var fakeValue = 'fakeValue';
+                            // fakeKey.__setTaint__(__taintConstants__()['OnLaunch']);
+                            // fakeValue.__setTaint__(__taintConstants__()['OnLaunch']);
+                            Object.defineProperty(r["appLaunchInfo"]["query"], fakeKey, {
+                                value: fakeValue,
+                                enumerable: false
+                            });
+                            // __setTaint__(r["appLaunchInfo"]["query"], __taintConstants__()['OnLaunch']);
+                        }
+                        var openTypeList = ["navigateTo", "redirectTo", "switchTab", "navigateBack", "reLaunch", "appLaunch"];
+                        if ("openType" in r){
+                            if (openTypeList.indexOf(r["openType"])!=-1){
+                                if ("query" in r){ 
+                                    if ("fakeKey" in r["query"]){ // this is to differenciate from the page routings from original code
+                                        // __setTaint__(r["query"], __taintConstants__()['OnLaunch']);
+                                    }
+                                }
+                            }
+                        }
+                        // yjj end
                         const a = t[e];
                         if ("function" == typeof a) try {
                             a(r, i)
@@ -890,64 +917,78 @@
                     let t = {},
                         o = !1,
                         a = !1;
-                    function findValandTaint(object, detail, value) {
-                        var res;
-                        Object.keys(object).some(function(k) {
-                            if (k === detail) {
-                                res = object[k];
-                                if (value in res){
-                                    var tmp = object[k][value];
-                                    // console.log(tmp);
-                                    if (typeof tmp==='string'){
-                                        object[k][value].__setTaint__(1);
-                                    }
-                                    // else if this is a form element, tmp is like: {name: "somestring"}
-                                    else if (typeof tmp==='object'){
-                                        for(var propt in tmp){
-                                            // do this for now, we don't know how to treat els like checkbox
-                                            if (typeof tmp[propt]==='string'){
-                                                tmp[propt].__setTaint__(1);
-                                            }
-                                            // console.log(propt + ': ' + tmp[propt]);
+                        // yjj start
+                        function findValandTaint(object, detail, value, taintType) {
+                            var res;
+                            Object.keys(object).some(function(k) {
+                                if (k === detail) {
+                                    res = object[k];
+                                    if (Array.isArray(value)){
+                                        for (const element of value){
+                                            object[k][element].__setTaint__(taintType);
                                         }
                                     }
+                                    else{
+                                        if (value in res){
+                                            var tmp = object[k][value];
+                                            if (typeof tmp==='string'){
+                                                if (taintType===undefined){
+                                                    taintType = __taintConstants__()['InputBox'];
+                                                }
+                                                object[k][value].__setTaint__(taintType);
+                                            }
+                                            // else if this is a form element, tmp is like: {name: "somestring"}
+                                            else if (typeof tmp==='object'){
+                                                for(var propt in tmp){
+                                                    // do this for now, we don't know how to treat els like checkbox
+                                                    if (typeof tmp[propt]==='string'){
+                                                        if (taintType===undefined){
+                                                            taintType = __taintConstants__()['FormSubmit'];
+                                                        }
+                                                        tmp[propt].__setTaint__(taintType);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    res = object[k];
+                                    return true;
                                 }
-                                res = object[k];
-                                return true;
-                            }
-                            if (object[k] && typeof object[k] === 'object') {
-                                res = findValandTaint(object[k], detail, value);
-                                return res !== undefined;
-                            }
-                        });
-                        return res;
-                    }
-                    function findVal(object, key) {
-                        var value;
-                        Object.keys(object).some(function(k) {
-                            if (k === key) {
-                                value = object[k];
-                                return true;
-                            }
-                            if (object[k] && typeof object[k] === 'object') {
-                                value = findVal(object[k], key);
-                                return value !== undefined;
-                            }
-                        });
-                        return value;
-                    }
+                                if (object[k] && typeof object[k] === 'object') {
+                                    res = findValandTaint(object[k], detail, value, taintType);
+                                    return res !== undefined;
+                                }
+                            });
+                            return res;
+                        }
+                        function findVal(object, key) {
+                            var value;
+                            Object.keys(object).some(function(k) {
+                                if (k === key) {
+                                    value = object[k];
+                                    return true;
+                                }
+                                if (object[k] && typeof object[k] === 'object') {
+                                    value = findVal(object[k], key);
+                                    return value !== undefined;
+                                }
+                            });
+                            return value;
+                        }
+                        // yjj end
                     function s(e, o, n) {
                         const r = t[e];
                         if ("function" == typeof r) try {
-                            // console.log('jianjia hack callback func',e,  JSON.stringify(o))
+                            // yjj start
+                            console.log('debug hack callback func', e,  JSON.stringify(o));
                             // for all inputs/forms, they must have: event.detail = { value }
                             // we just need to taint this event.detail.value
                             findValandTaint(o, "detail", "value");
-                            // var detail = findVal(o, 'detail');
-                            // if (detail && 'value' in detail){
-                                // console.log('jianjia hack callback func', detail.value.__getTaint__());
-                            // }
-                            r(o, n);
+                            findValandTaint(o, "detail", "rawData", __taintConstants__()['WechatAPI']);
+                            const userInfoItems = ["nickName", "avatarUrl", "province", "city", "country"]; // we can not taint gender cause it's number
+                            findValandTaint(o, "userInfo", userInfoItems, __taintConstants__()['WechatAPI']);
+                            // yjj end
+                            r(o, n)
                         } catch (e) {
                             console.error(e)
                         }
@@ -2867,7 +2908,6 @@
                         return this.frames.has(e) && this.currentFrameId === e
                     }
                     loadAppService(e, t) {
-                        console.log("jianjia see loadAppService")
                         if (d.calibration(), 0 === this.frames.size || t) {
                             if (t) {
                                 this.verbose && this.groupDebug("info", "--loader--", "will force load");
@@ -3639,8 +3679,7 @@
                             for (const {
                                     event: e,
                                     fn: t
-                                }
-                                of this.instanceScopeListeners) this.off(e, t);
+                                } of this.instanceScopeListeners) this.off(e, t);
                             this.instanceScopeListeners.clear()
                         }))
                     }
@@ -4405,8 +4444,6 @@
                                 }
                             },
                             checkUrl: (e, t = "request") => {
-                                    // jianjia: we can add here one check for the url, to see whether the url is tainted
-                                    // console.log('jianjia hack in checkUrl');
                                     if (n.isTourist()) return f && (console.group(`${new Date} 无 AppID 关联`), console.warn("工具未检查合法域名，更多请参考文档：https://developers.weixin.qq.com/miniprogram/dev/framework/ability/network.html"), console.groupEnd(), f = !1), !0;
                                     if (!r.DevtoolsConfig.urlCheck) return window.__disPlayURLCheckWarning && (console.group(`${new Date} 配置中关闭合法域名、web-view（业务域名）、TLS 版本以及 HTTPS 证书检查`), console.warn("工具未校验合法域名、web-view（业务域名）、TLS 版本以及 HTTPS 证书。"), console.groupEnd(), window.__disPlayURLCheckWarning = !1), !0;
                                     if (!e) return !1;

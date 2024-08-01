@@ -2516,20 +2516,35 @@
 						connectSocket: !0,
 						createUDPSocket: !0
 					},
-					cocoSpecialSources = [ "getStorageSync"],
 					cocoSources = [ "getStorage",
 									"getUserInfo", "getUserProfile",
-									"getLocation", "onLocationChange", "startLocationUpdate", "startLocationUpdateBackground",
+									"getLocation", "getFuzzyLocation", "onLocationChange", "startLocationUpdate", 
+									"startLocationUpdateBackground", "choosePoi", "chooseLocation", "chooseAddress", 
 									"getNetworkType", "createCameraContext", "getBLEDeviceCharacteristics", "getConnectedWifi",
-									"chooseVideo", "chooseMedia", "getFileInfo", "startRecord", "chooseImage",
-									"chooseAddress", 
+									"chooseVideo", "chooseMedia", "getFileInfo", "startRecord", "getRecorderManager", "joinVoIPChat",
+									"chooseImage", "chooseMessageFile", 
+									"chooseLicensePlate",
 									"getWeRunData", "chooseInvoiceTitle", "chooseInvoice", "chooseContact"],
-					cocoSinks = {   "request":["url"], // now we only focus on url manipulation. BTW, why is "data" dangerous?
+					cocoSinks = {   "request":["url", "data"], // we add "data" since taintMini include it
 									"uploadFile":["url", "filePath", "name"],
+									"downloadFile":["url", "filePath"], 
+									"connectSocket": ["url"], // these four network related APIs
+									// "createTCPSocket": [], // no arguments
+									// "createUDPSocket":[], // no arguments
 									"navigateToMiniProgram":["appId", "path", "extraData"], // extraData is an object
-									"sendSocketMessage":["data"],
-									"createUDPSocket":[],
-									"writeBLECharacteristicValue":["deviceId", "serviceId", "characteristicId", "value"]}, // value is an ArrayBuffer, do we support taint for ArrayBuffer?
+									"sendSocketMessage":["data"], // data: string/ArrayBuffer	
+									"writeBLECharacteristicValue":["deviceId", "serviceId", "characteristicId", "value"], // value is an ArrayBuffer, do we support taint for ArrayBuffer?
+									// "createBLEPeripheralServer":[], // no arguments
+									"openBluetoothAdapter":["mode"], 
+									"createVKSession":["version", "track"], // track is an object
+									// "createLivePusherContext":[], // no arguments
+									"saveImageToPhotosAlbum":["filePath"],
+									"saveVideoToPhotosAlbum": ["filePath"],
+									// "addPhoneContact": [], // a lot ...need user approve
+									// "addPhoneRepeatCalendar": [], // a lot ... need user approve
+									// "addPhoneCalendar": [] // a lot ...need user approve
+									"setStorage": ["key", "data"], // data can be objects
+								}, 
 					cocoOnShow = ["onShow", "getLaunchOptionsSync", "onAppShow", "getEnterOptionsSync"],
 					// navigateTo: url, redirectTo: url, switchTab: url, reLaunch: url
 					miniumNavigate =["navigateTo", "redirectTo", "switchTab", "reLaunch"],
@@ -2539,6 +2554,7 @@
 							if (args.hasOwnProperty(cocoCallbacks[i])){
 								var tmp = args[cocoCallbacks[i]];
 								args[cocoCallbacks[i]] = function(res){
+									// here we taint both the keys and the values
 									__setTaint__(res, __taintConstants__()['WechatAPI']); 
 									// console.log('hack source');
 									tmp(res); 
@@ -2547,6 +2563,36 @@
 						}
 						return args;
 					},		
+					checkTaintObjectProperties = function(obj, prefix = '') {
+						// fake Property
+						if (obj.fakeKey) {
+							console.log(obj.fakeKey);
+							obj.fakeKey.__checkTaint__();
+						}
+						// other properties
+						for (let key in obj) {
+						  if (obj.hasOwnProperty(key)) {
+						  	key.__checkTaint__();
+							// console.log('key', key, key.__getTaint__());
+							const fullKey = prefix ? `${prefix}.${key}` : key;
+							const value = obj[key];
+					  
+							if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+								  checkTaintObjectProperties(value, fullKey)
+							} else if (typeof value === 'string') {
+								value.__checkTaint__();
+								// console.log('value', value.__getTaint__());
+							} else if (Array.isArray(value)){
+								for (const el of value) {
+									if (typeof el === 'string'){
+										el.__checkTaint__();
+									  	// console.log('value', el.__getTaint__());
+								  }
+							  }
+							}
+						  }
+						}
+					},
 					v = (e, t, o) => {
 						const s = {},
 							{
@@ -2562,7 +2608,16 @@
 										var i, l;
 										const f = null === (l = (i = top.__global).getHookMethodsCache) || void 0 === l ? void 0 : l.call(i);
 										console.log('jianjia see all API name and args: ' + o + JSON.stringify(s));
-										if (cocoSources.indexOf(o)!== -1){
+										if (o=="setStorageSync"){
+											s[0].__checkTaint__();
+											if (typeof s[1]==='string'){
+												s[1].__checkTaint__();
+											}
+											else {
+												checkTaintObjectProperties(s[1]);
+											}
+										}
+										else if (cocoSources.indexOf(o)!== -1){
 											console.log('jianjia: taint source hit, API name and args: ' + o + JSON.stringify(s));
 											if (s.length>0){
 												s[0] = taintCallbacks(s[0]);
@@ -2573,18 +2628,35 @@
 											for (var index in cocoSinks[o]){
 												var prop_val = cocoSinks[o][index];
 												if (typeof s[0][prop_val]==='string'){
+													// let decoder = new TextDecoder('utf-8');
+              										// let stringResult = decoder.decode(s[0][prop_val].__getTaint__());
+													// console.log('jianjia: see string taint', stringResult);
 													s[0][prop_val].__checkTaint__();
 												}
+												else{ // if s[0][prop_val] is an object, taint it recursively
+													checkTaintObjectProperties(s[0][prop_val]);
+												}
 											}
-										}
-										else if (miniumNavigate.indexOf(o)!== -1){
-											s[0]["url"].__setTaint__(__taintConstants__()['OnLaunch'])
 										}
 										else if (cocoOnShow.indexOf(o)!== -1){
 											console.log('cocoOnShow: ', res);
 										}
 										if (!t.hasOwnProperty(o) || !f || 0 === Object.keys(f).length) {
 											var res = n.apply(e, s);
+											// jianjia start
+											if (o=="getStorageSync") {
+												console.log('see getStorageSync', res);
+												if (typeof res === 'string' && res !== ""){
+													console.log(res);
+													var taintTmp = res.__getTaint__();
+													var view = new Uint8Array(taintTmp); 
+													if (view[0]==0){ // if it's not tainted before, we taint it.
+														__setTaint__(res, __taintConstants__()["WechatAPI"]);
+													}
+													console.log("res after taint: ", res.__getTaint__());
+												}
+											}
+											// jianjia end
 											return res;
 										} // jianjia: here may return error, so we check before this
                                         const v = t[o],
