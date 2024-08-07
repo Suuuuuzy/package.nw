@@ -727,8 +727,9 @@
                         // console.log("jianjia in js/extensions/appservice/index.js", r);
                         if ("appLaunchInfo" in r){
                             console.log(r["appLaunchInfo"]);
-                            r["appLaunchInfo"]["query"] = {"fakeKey":"fakeValue"};
-                            __setTaint__(r["appLaunchInfo"]["query"], __taintConstants__()['OnLaunch']);
+                            r["appLaunchInfo"]["query"] = {"testkey":"testvalue"};
+                            r["appLaunchInfo"]["query"]["testkey"].__setTaint__(__taintConstants__()['OnLaunch']);
+                            // __setTaint__(r["appLaunchInfo"]["query"], __taintConstants__()['OnLaunch']);
                         }
                         var openTypeList = ["navigateTo", "redirectTo", "switchTab", "navigateBack", "reLaunch", "appLaunch"];
                         if ("openType" in r){
@@ -742,8 +743,9 @@
                                 // }
                                 // __setTaint__(r["query"], __taintConstants__()['OnLaunch']);
                                 if ("query" in r){ 
-                                    if ("fakeKey" in r["query"]){ // this is to differenciate from the page routings from original code
-                                        __setTaint__(r["query"], __taintConstants__()['OnLaunch']);
+                                    if ("testkey" in r["query"]){ // this is to differenciate from the page routings from original code
+                                        r["query"]["testkey"].__setTaint__(__taintConstants__()['OnLaunch']);
+                                        // __setTaint__(r["query"], __taintConstants__()['OnLaunch']);
                                     }
                                 }
                             }
