@@ -2516,7 +2516,8 @@
 						connectSocket: !0,
 						createUDPSocket: !0
 					},
-					cocoSources = [ "getStorage",
+					storageSource = ["getStorage"],
+					cocoSources = [ 
 									"getUserInfo", "getUserProfile",
 									"getLocation", "getFuzzyLocation", "onLocationChange", "startLocationUpdate", 
 									"startLocationUpdateBackground", "choosePoi", "chooseLocation", "chooseAddress", 
@@ -2525,8 +2526,8 @@
 									"chooseImage", "chooseMessageFile", 
 									"chooseLicensePlate",
 									"getWeRunData", "chooseInvoiceTitle", "chooseInvoice", "chooseContact"],
-					cocoSinks = {   "request":["url"], // now we only focus on url manipulation. BTW, why is "data" dangerous?
-									"uploadFile":["url", "filePath", "name"],
+					cocoSinks = {   "request":["url", "data"], // we add "data" since taintMini include it
+									"uploadFile":["url", "filePath", "name", "formData"],
 									"downloadFile":["url", "filePath"], 
 									"connectSocket": ["url"], // these four network related APIs
 									// "createTCPSocket": [], // no arguments
@@ -2545,28 +2546,67 @@
 									// "addPhoneCalendar": [] // a lot ...need user approve
 									"setStorage": ["key", "data"], // data can be objects
 								}, 
-					// todo: see the arguments for storage sinks and set taint, can we track taint through storage?
-					// storageSyncs = {
-									// "setStorageSync": ["key", ], // wx.setStorageSync('key', 'value')
-									// "getStorageSync" // wx.getStorageSync('key')
-									// },
 					cocoOnShow = ["onShow", "getLaunchOptionsSync", "onAppShow", "getEnterOptionsSync"],
 					// navigateTo: url, redirectTo: url, switchTab: url, reLaunch: url
 					miniumNavigate =["navigateTo", "redirectTo", "switchTab", "reLaunch"],
 					cocoCallbacks = ["success", "fail", "complete"],	
-					taintCallbacks = function(args){
+					updateAllValues = function(obj) {
+						for (let key in obj) {
+							if (obj.hasOwnProperty(key)) {
+								if (typeof obj[key] === 'object' && obj[key] !== null) {
+									// Recursively update values in nested objects
+									updateAllValues(obj[key]);
+								} else if (typeof obj[key] === 'string') {
+									// Update the value
+									obj[key].__setTaint__(__taintConstants__()['WechatAPI']);
+								}
+							}
+						}
+					},
+					taintCallbacks = function(args, taintKey = false){
 						for (const i in cocoCallbacks){
 							if (args.hasOwnProperty(cocoCallbacks[i])){
 								var tmp = args[cocoCallbacks[i]];
 								args[cocoCallbacks[i]] = function(res){
-									__setTaint__(res, __taintConstants__()['WechatAPI']); 
-									// console.log('hack source');
+									if (taintKey){
+										// taint both the keys and the values
+										__setTaint__(res, __taintConstants__()['WechatAPI']); 
+										// console.log('hack source');
+									}
+									else{
+										// taint the values only
+										updateAllValues(res);
+									}
 									tmp(res); 
 								}
 							}
 						}
 						return args;
 					},		
+					checkTaintObjectProperties = function(obj, prefix = '') {
+						for (let key in obj) {
+						  if (obj.hasOwnProperty(key)) {
+						  	key.__checkTaint__();
+							// console.log('key', key, key.__getTaint__());
+							const fullKey = prefix ? `${prefix}.${key}` : key;
+							const value = obj[key];
+					  
+							if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+								  checkTaintObjectProperties(value, fullKey)
+							} else if (typeof value === 'string') {
+								value.__checkTaint__();
+								// console.log('value', value.__getTaint__());
+							} else if (Array.isArray(value)){
+								for (const el of value) {
+									if (typeof el === 'string'){
+										el.__checkTaint__();
+									  	// console.log('value', el.__getTaint__());
+								  }
+							  }
+							}
+						  }
+						}
+					},
 					v = (e, t, o) => {
 						const s = {},
 							{
@@ -2584,7 +2624,12 @@
 										console.log('jianjia see all API name and args: ' + o + JSON.stringify(s));
 										if (o=="setStorageSync"){
 											s[0].__checkTaint__();
-											s[1].__checkTaint__();
+											if (typeof s[1]==='string'){
+												s[1].__checkTaint__();
+											}
+											else {
+												checkTaintObjectProperties(s[1]);
+											}
 										}
 										else if (cocoSources.indexOf(o)!== -1){
 											console.log('jianjia: taint source hit, API name and args: ' + o + JSON.stringify(s));
@@ -2592,15 +2637,24 @@
 												s[0] = taintCallbacks(s[0]);
 											}
 										}
+										else if (storageSource.indexOf(o)!== -1){
+											console.log('jianjia: taint storage source hit, API name and args: ' + o + JSON.stringify(s));
+											if (s.length>0){
+												s[0] = taintCallbacks(s[0], true);
+											}
+										}
 										else if (cocoSinks.hasOwnProperty(o)){
 											console.log("jianjia: taint sink hit", o, JSON.stringify(s))
 											for (var index in cocoSinks[o]){
 												var prop_val = cocoSinks[o][index];
 												if (typeof s[0][prop_val]==='string'){
-													let decoder = new TextDecoder('utf-8');
-              										let stringResult = decoder.decode(s[0][prop_val].__getTaint__());
-													console.log('jianjia: see string taint', stringResult);
+													// let decoder = new TextDecoder('utf-8');
+              										// let stringResult = decoder.decode(s[0][prop_val].__getTaint__());
+													// console.log('jianjia: see string taint', stringResult);
 													s[0][prop_val].__checkTaint__();
+												}
+												else{ // if s[0][prop_val] is an object, taint it recursively
+													checkTaintObjectProperties(s[0][prop_val]);
 												}
 											}
 										}
@@ -2609,15 +2663,24 @@
 										}
 										if (!t.hasOwnProperty(o) || !f || 0 === Object.keys(f).length) {
 											var res = n.apply(e, s);
+											// jianjia start
 											if (o=="getStorageSync") {
-												console.log('see setStorageSync', res);
-												var taintTmp = res.__getTaint__();
-												var view = new Uint8Array(taintTmp); 
-												if (view[0]==0){ // if it's not tainted before, we taint it.
-													__setTaint__(res, __taintConstants__()["WechatAPI"]);
+												if (res===""){
+													res = 'testvalue';
 												}
-												console.log("res after taint: ", res.__getTaint__());
+												console.log('see getStorageSync', res);
+												if (typeof res === 'string' && res !== ""){
+													var taintTmp = res.__getTaint__();
+													var view = new Uint8Array(taintTmp); 
+													if (view[0]==0){ // if it's not tainted before, we taint it.
+														console.log('storage value not tainted before, taint it');
+														res.__setTaint__(__taintConstants__()["WechatAPI"]);
+														// __setTaint__(res, __taintConstants__()["WechatAPI"]);
+													}
+													console.log("res after taint: ", res.__getTaint__());
+												}
 											}
+											// jianjia end
 											return res;
 										} // jianjia: here may return error, so we check before this
                                         const v = t[o],
